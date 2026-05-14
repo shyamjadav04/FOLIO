@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ name }} — Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+        :root {
+            --ink:      #1a1a1a;
+            --ink2:     #333333;
+            --muted:    #666666;
+            --light:    #999999;
+            --accent:   #2563eb;
+            --border:   #e5e5e5;
+            --bg:       #f5f5f0;
+            --white:    #ffffff;
+        }
+ 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            font-size: 13px;
+            line-height: 1.6;
+            padding: 32px 16px 64px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+ 
+        /* ── Toolbar ── */
+        .toolbar {
+            max-width: 720px;
+            margin: 0 auto 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .toolbar-brand {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: .3px;
+        }
+        .toolbar-brand span { color: var(--accent); }
+        .print-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 20px;
+            background: var(--ink);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: .3px;
+            transition: background .15s;
+        }
+        .print-btn:hover { background: #333; }
+ 
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar { display: none; }
+            .resume { box-shadow: none !important; }
+        }
+ 
+        /* ── Resume Shell ── */
+        .resume {
+            max-width: 720px;
+            margin: 0 auto;
+            background: var(--white);
+            box-shadow: 0 4px 32px rgba(0,0,0,.1);
+            min-height: 1020px;
+        }
+ 
+        /* ══════════════════════════
+           HEADER
+        ══════════════════════════ */
+        .header {
+            padding: 48px 56px 36px;
+            border-bottom: 2px solid var(--ink);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 24px;
+            align-items: start;
+        }
+ 
+        .header-left {}
+ 
+        .h-name {
+            font-family: 'Lora', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -.5px;
+            line-height: 1.05;
+            margin-bottom: 6px;
+        }
+        .h-title {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 18px;
+        }
+ 
+        /* Contact row */
+        .h-contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 20px;
+        }
+        .h-contact-item {
+            font-size: 11.5px;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .h-contact-item a { color: inherit; text-decoration: none; }
+        .h-contact-item a:hover { color: var(--accent); }
+        .h-contact-item .sep { color: var(--border); }
+ 
+        /* Photo (right side) */
+        .header-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 5px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-placeholder {
+            font-size: 32px;
+            color: #ccc;
+        }
+ 
+        /* ══════════════════════════
+           BODY
+        ══════════════════════════ */
+        .body {
+            padding: 36px 56px 48px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+ 
+        /* ── Section ── */
+        .section {}
+        .sec-title {
+            font-family: 'Lora', serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1.5px solid var(--ink);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+ 
+        /* ── Summary ── */
+        .summary-text {
+            font-size: 13px;
+            color: var(--ink2);
+            line-height: 1.8;
+            font-weight: 300;
+        }
+ 
+        /* ── Experience / Education entries ── */
+        .entries { display: flex; flex-direction: column; gap: 20px; }
+ 
+        .entry {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2px 16px;
+        }
+        .entry-main {}
+        .entry-side {
+            text-align: right;
+            flex-shrink: 0;
+        }
+ 
+        .entry-title {
+            font-family: 'Lora', serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+        .entry-org {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 2px;
+        }
+        .entry-loc {
+            font-size: 11px;
+            color: var(--light);
+            margin-bottom: 7px;
+        }
+        .entry-date {
+            font-size: 11px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        .entry-score {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+        .entry-desc {
+            font-size: 12.5px;
+            color: var(--ink2);
+            line-height: 1.72;
+            font-weight: 300;
+        }
+        .entry-desc ul {
+            padding-left: 16px;
+            margin-top: 4px;
+        }
+        .entry-desc li {
+            margin-bottom: 3px;
+        }
+ 
+        /* Divider between entries */
+        .entry + .entry {
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+ 
+        /* ── Skills ── */
+        .skills-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+        .skill-chip {
+            padding: 4px 12px;
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            font-size: 12px;
+            color: var(--ink2);
+            background: #fafafa;
+            font-weight: 400;
+        }
+ 
+        /* ── Languages ── */
+        .lang-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .lang-item {
+            font-size: 12px;
+            color: var(--ink2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .lang-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+ 
+        /* ── Projects ── */
+        .proj-list { display: flex; flex-direction: column; gap: 16px; }
+        .proj-entry { }
+        .proj-head {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        .proj-name {
+            font-family: 'Lora', serif;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+        .proj-tech {
+            font-size: 10.5px;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 1px 7px;
+            white-space: nowrap;
+        }
+        .proj-link {
+            font-size: 11px;
+            color: var(--accent);
+            text-decoration: none;
+            margin-left: auto;
+        }
+        .proj-link:hover { text-decoration: underline; }
+        .proj-desc {
+            font-size: 12px;
+            color: var(--ink2);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+        .proj-entry + .proj-entry {
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+ 
+        /* ── Certs & Awards ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        .ca-label {
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--light);
+            margin-bottom: 10px;
+        }
+        .ca-list { display: flex; flex-direction: column; gap: 6px; }
+        .ca-item {
+            font-size: 12px;
+            color: var(--ink2);
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            line-height: 1.5;
+        }
+        .ca-item::before {
+            content: '—';
+            color: var(--accent);
+            font-size: 11px;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+ 
+        /* ── Interests ── */
+        .interest-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+        .interest-chip {
+            font-size: 12px;
+            color: var(--muted);
+            padding: 3px 12px;
+            border: 1px solid var(--border);
+            border-radius: 100px;
+        }
+ 
+        /* ── Footer band ── */
+        .resume-footer {
+            margin-top: auto;
+            padding: 16px 56px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-name {
+            font-family: 'Lora', serif;
+            font-size: 11px;
+            color: var(--light);
+            font-style: italic;
+        }
+        .footer-exp {
+            font-size: 11px;
+            color: var(--light);
+        }
+    </style>
+</head>
+<body>
+ 
+<!-- Toolbar -->
+<div class="toolbar">
+    <div class="toolbar-brand">Resumé<span>Craft</span></div>
+    <button class="print-btn" onclick="window.print()">↓ Download PDF</button>
+</div>
+ 
+<div class="resume">
+ 
+    <!-- ══ HEADER ══ -->
+    <header class="header">
+        <div class="header-left">
+            <div class="h-name">{{ name }}</div>
+            {% if job_title %}
+            <div class="h-title">{{ job_title }}</div>
+            {% endif %}
+ 
+            <div class="h-contact">
+                {% if email %}
+                <span class="h-contact-item">✉ <a href="mailto:{{ email }}">{{ email }}</a></span>
+                {% endif %}
+                {% if phone %}
+                <span class="h-contact-item">· {{ phone }}</span>
+                {% endif %}
+                {% if location %}
+                <span class="h-contact-item">· {{ location }}</span>
+                {% endif %}
+                {% if linkedin %}
+                <span class="h-contact-item">· <a href="{{ linkedin }}" target="_blank">LinkedIn</a></span>
+                {% endif %}
+                {% if github %}
+                <span class="h-contact-item">· <a href="{{ github }}" target="_blank">GitHub</a></span>
+                {% endif %}
+                {% if website %}
+                <span class="h-contact-item">· <a href="{{ website }}" target="_blank">Portfolio</a></span>
+                {% endif %}
+            </div>
+        </div>
+ 
+        {% if photo_url %}
+        <div class="header-photo">
+            <img src="{{ photo_url }}" alt="{{ name }}">
+        </div>
+        {% endif %}
+    </header>
+ 
+    <!-- ══ BODY ══ -->
+    <div class="body">
+ 
+        <!-- Summary -->
+        {% if summary %}
+        <div class="section">
+            <div class="sec-title">Profile</div>
+            <p class="summary-text">{{ summary }}</p>
+        </div>
+        {% endif %}
+ 
+        <!-- Skills -->
+        {% if skills %}
+        <div class="section">
+            <div class="sec-title">Skills</div>
+            <div class="skills-wrap">
+                {% for skill in skills %}
+                    {% if skill %}<span class="skill-chip">{{ skill }}</span>{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Work Experience -->
+        {% if experiences %}
+        <div class="section">
+            <div class="sec-title">Experience</div>
+            <div class="entries">
+                {% for exp in experiences %}
+                <div class="entry">
+                    <div class="entry-main">
+                        <div class="entry-title">{{ exp.title }}</div>
+                        <div class="entry-org">{{ exp.company }}</div>
+                        {% if exp.location %}
+                        <div class="entry-loc">{{ exp.location }}</div>
+                        {% endif %}
+                        {% if exp.description %}
+                        <div class="entry-desc">{{ exp.description|linebreaks }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="entry-side">
+                        <div class="entry-date">{{ exp.start }}{% if exp.end %} – {{ exp.end }}{% endif %}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Education -->
+        {% if educations %}
+        <div class="section">
+            <div class="sec-title">Education</div>
+            <div class="entries">
+                {% for edu in educations %}
+                <div class="entry">
+                    <div class="entry-main">
+                        <div class="entry-title">{{ edu.degree }}</div>
+                        <div class="entry-org">{{ edu.institution }}</div>
+                        {% if edu.score %}
+                        <div class="entry-loc">{{ edu.score }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="entry-side">
+                        <div class="entry-date">{{ edu.year }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Projects -->
+        {% if projects %}
+        <div class="section">
+            <div class="sec-title">Projects</div>
+            <div class="proj-list">
+                {% for proj in projects %}
+                <div class="proj-entry">
+                    <div class="proj-head">
+                        <span class="proj-name">{{ proj.name }}</span>
+                        {% if proj.tech %}<span class="proj-tech">{{ proj.tech }}</span>{% endif %}
+                        {% if proj.link %}<a class="proj-link" href="{{ proj.link }}" target="_blank">↗ View</a>{% endif %}
+                    </div>
+                    {% if proj.description %}
+                    <div class="proj-desc">{{ proj.description }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Languages -->
+        {% if languages %}
+        <div class="section">
+            <div class="sec-title">Languages</div>
+            <div class="lang-grid">
+                {% for lang in languages %}
+                    {% if lang %}
+                    <div class="lang-item">
+                        <span class="lang-dot"></span>
+                        {{ lang }}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Certifications & Awards -->
+        {% if certifications or awards %}
+        <div class="section">
+            <div class="sec-title">Certifications & Awards</div>
+            <div class="two-col">
+                {% if certifications %}
+                <div>
+                    <div class="ca-label">Certifications</div>
+                    <div class="ca-list">
+                        {% for cert in certifications %}
+                            {% if cert %}<div class="ca-item">{{ cert }}</div>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% if awards %}
+                <div>
+                    <div class="ca-label">Awards</div>
+                    <div class="ca-list">
+                        {% for award in awards %}
+                            {% if award %}<div class="ca-item">{{ award }}</div>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Interests -->
+        {% if interests %}
+        <div class="section">
+            <div class="sec-title">Interests</div>
+            <div class="interest-wrap">
+                {% for interest in interests %}
+                    {% if interest %}<span class="interest-chip">{{ interest }}</span>{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+    </div>
+ 
+    <!-- Footer band -->
+    <div class="resume-footer">
+        <div class="footer-name">{{ name }}{% if job_title %} · {{ job_title }}{% endif %}</div>
+        {% if years_experience %}
+        <div class="footer-exp">{{ years_experience }} years of experience</div>
+        {% endif %}
+    </div>
+ 
+</div>
+ 
+</body>
+</html>

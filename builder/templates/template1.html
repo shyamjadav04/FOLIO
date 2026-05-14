@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ name }} — Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ══ RESET ══ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+        :root {
+            --ink:        #0f1623;
+            --ink2:       #1e2d45;
+            --ink-soft:   #3d5166;
+            --slate:      #7a8ea8;
+            --accent:     #3b5bdb;
+            --accent2:    #2f4ac7;
+            --accent-lt:  #6e86e8;
+            --accent-pale:#eef1fd;
+            --cream:      #fafbfe;
+            --white:      #ffffff;
+            --border:     #e4e8f0;
+            --sidebar-w:  252px;
+        }
+ 
+        html { font-size: 13px; }
+ 
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #dce4f0;
+            color: var(--ink);
+            line-height: 1.6;
+            padding: 32px 16px 64px;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+ 
+        /* ══ PRINT TOOLBAR ══ */
+        .toolbar {
+            max-width: 900px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .toolbar-brand {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--ink-soft);
+            letter-spacing: .3px;
+        }
+        .toolbar-brand span { color: var(--accent); }
+        .print-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 22px;
+            background: var(--ink);
+            color: white;
+            border: none;
+            border-radius: 100px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: .4px;
+            transition: background .15s, transform .15s;
+        }
+        .print-btn:hover { background: var(--ink2); transform: translateY(-1px); }
+ 
+        @media print {
+            body { background: white; padding: 0; }
+            .toolbar { display: none; }
+            .resume { box-shadow: none !important; margin: 0; }
+        }
+ 
+        /* ══ RESUME SHELL ══ */
+        .resume {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            display: grid;
+            grid-template-columns: var(--sidebar-w) 1fr;
+            min-height: 1000px;
+            box-shadow:
+                0 2px 4px rgba(0,0,0,.04),
+                0 8px 24px rgba(0,0,0,.08),
+                0 32px 80px rgba(0,0,0,.14);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+ 
+        /* ══ SIDEBAR ══ */
+        .sidebar {
+            background: var(--ink);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+ 
+        /* Decorative geometric accent */
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 200px; height: 200px;
+            border-radius: 50%;
+            background: rgba(59,91,219,.15);
+            pointer-events: none;
+        }
+        .sidebar::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: -40px;
+            width: 160px; height: 160px;
+            border-radius: 50%;
+            background: rgba(59,91,219,.1);
+            pointer-events: none;
+        }
+ 
+        /* ─ Sidebar top (photo + name) ─ */
+        .sb-top {
+            padding: 36px 24px 28px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+ 
+        .avatar-ring {
+            width: 108px; height: 108px;
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-lt));
+            position: relative;
+        }
+        .avatar-inner {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--ink2);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .avatar-inner img {
+            width: 100%; height: 100%;
+            object-fit: cover; border-radius: 50%;
+        }
+        .avatar-placeholder {
+            font-size: 36px;
+            color: rgba(255,255,255,.3);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+ 
+        .sb-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 21px;
+            font-weight: 700;
+            line-height: 1.15;
+            color: white;
+            margin-bottom: 6px;
+            letter-spacing: -.3px;
+        }
+        .sb-title {
+            font-size: 9.5px;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--accent-lt);
+            line-height: 1.4;
+        }
+ 
+        /* Accent rule under name */
+        .sb-rule {
+            width: 32px; height: 2px;
+            background: var(--accent);
+            margin: 14px auto 0;
+            border-radius: 2px;
+        }
+ 
+        /* ─ Sidebar body ─ */
+        .sb-body {
+            padding: 26px 22px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+            position: relative; z-index: 1;
+        }
+ 
+        /* Sidebar section label */
+        .sb-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 8.5px;
+            font-weight: 500;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+            color: var(--accent-lt);
+            margin-bottom: 12px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+        .sb-label::before {
+            content: '';
+            display: inline-block;
+            width: 14px; height: 1.5px;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+ 
+        /* Contact list */
+        .c-list { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+        .c-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            font-size: 11px;
+            color: rgba(255,255,255,.72);
+            line-height: 1.45;
+            word-break: break-word;
+        }
+        .c-list li .ico {
+            width: 18px; height: 18px;
+            border-radius: 5px;
+            background: rgba(59,91,219,.25);
+            border: 1px solid rgba(59,91,219,.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 9px;
+            flex-shrink: 0;
+            margin-top: 0px;
+            color: var(--accent-lt);
+        }
+        .c-list a { color: inherit; text-decoration: none; }
+        .c-list a:hover { color: var(--accent-lt); }
+ 
+        /* Skill tags */
+        .tag-wrap { display: flex; flex-wrap: wrap; gap: 5px; }
+        .skill-tag {
+            background: rgba(59,91,219,.18);
+            border: 1px solid rgba(59,91,219,.28);
+            border-radius: 5px;
+            padding: 3px 9px;
+            font-size: 10.5px;
+            color: rgba(255,255,255,.8);
+            font-weight: 400;
+            letter-spacing: .2px;
+        }
+ 
+        /* Languages */
+        .lang-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            gap: 8px;
+        }
+        .lang-row:last-child { margin-bottom: 0; }
+        .lang-name-txt {
+            font-size: 11.5px;
+            color: rgba(255,255,255,.8);
+        }
+        .lang-dots {
+            display: flex; gap: 3px;
+        }
+        .lang-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: rgba(59,91,219,.3);
+            border: 1px solid rgba(59,91,219,.4);
+        }
+        .lang-dot.on {
+            background: var(--accent-lt);
+            border-color: var(--accent-lt);
+        }
+ 
+        /* Big experience number */
+        .exp-big {
+            font-family: 'Playfair Display', serif;
+            font-size: 44px;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+        .exp-big span {
+            font-size: 16px;
+            color: var(--accent-lt);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            letter-spacing: 0;
+        }
+        .exp-sub {
+            font-size: 10.5px;
+            color: rgba(255,255,255,.4);
+            margin-top: 2px;
+            letter-spacing: .5px;
+        }
+ 
+        /* Interest tags */
+        .interest-tag {
+            background: rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 100px;
+            padding: 3px 10px;
+            font-size: 10.5px;
+            color: rgba(255,255,255,.65);
+        }
+ 
+        /* ══ MAIN CONTENT ══ */
+        .main {
+            background: var(--cream);
+            padding: 40px 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            position: relative;
+        }
+ 
+        /* Faint watermark lines on main bg */
+        .main::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 120px; height: 120px;
+            border-bottom: 1px solid var(--border);
+            border-left: 1px solid var(--border);
+            border-radius: 0 0 0 120px;
+            pointer-events: none;
+        }
+ 
+        /* ─ Section ─ */
+        .section { }
+        .sec-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .sec-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--ink);
+            white-space: nowrap;
+            letter-spacing: -.2px;
+        }
+        .sec-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: .35;
+        }
+        .sec-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+        }
+ 
+        /* ─ Profile summary ─ */
+        .profile-text {
+            font-size: 12.5px;
+            color: var(--ink-soft);
+            line-height: 1.8;
+            font-weight: 300;
+            border-left: 3px solid var(--accent);
+            padding-left: 14px;
+            background: var(--accent-pale);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            border-left: 3px solid var(--accent);
+        }
+ 
+        /* ─ Timeline entries (experience, education) ─ */
+        .timeline { display: flex; flex-direction: column; gap: 0; }
+        .tl-entry {
+            display: grid;
+            grid-template-columns: 10px 1fr;
+            gap: 0 16px;
+            padding-bottom: 20px;
+            position: relative;
+        }
+        .tl-entry:last-child { padding-bottom: 0; }
+ 
+        /* Vertical line */
+        .tl-line {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 4px;
+        }
+        .tl-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 2px solid var(--cream);
+            box-shadow: 0 0 0 1.5px var(--accent);
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .tl-track {
+            flex: 1;
+            width: 1.5px;
+            background: var(--border);
+            margin-top: 6px;
+        }
+        .tl-entry:last-child .tl-track { display: none; }
+ 
+        .tl-body { min-width: 0; }
+ 
+        .tl-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 2px;
+            gap: 8px;
+        }
+        .tl-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1.25;
+        }
+        .tl-date {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--slate);
+            white-space: nowrap;
+            margin-top: 2px;
+            flex-shrink: 0;
+            background: var(--accent-pale);
+            padding: 2px 8px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+        }
+        .tl-sub {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 7px;
+            flex-wrap: wrap;
+        }
+        .tl-org {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            letter-spacing: .2px;
+        }
+        .tl-loc {
+            font-size: 11px;
+            color: var(--slate);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .tl-loc::before {
+            content: '·';
+            color: var(--border);
+            font-size: 14px;
+        }
+        .tl-desc {
+            font-size: 12px;
+            color: var(--ink-soft);
+            line-height: 1.72;
+            font-weight: 300;
+        }
+        .tl-desc ul { padding-left: 15px; }
+        .tl-desc li { margin-bottom: 3px; }
+ 
+        /* ─ Projects ─ */
+        .proj-list { display: flex; flex-direction: column; gap: 14px; }
+        .proj-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .proj-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-lt));
+        }
+        .proj-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+        .proj-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+        .proj-tech-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 9.5px;
+            background: var(--accent-pale);
+            color: var(--accent2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(59,91,219,.18);
+            font-weight: 500;
+        }
+        .proj-link {
+            font-size: 10.5px;
+            color: var(--accent);
+            text-decoration: none;
+            margin-left: auto;
+            font-weight: 500;
+            letter-spacing: .2px;
+            flex-shrink: 0;
+        }
+        .proj-link:hover { text-decoration: underline; }
+        .proj-desc {
+            font-size: 12px;
+            color: var(--ink-soft);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+ 
+        /* ─ Certs & Awards ─ */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .ca-sub-title {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--slate);
+            margin-bottom: 10px;
+        }
+        .ca-list { display: flex; flex-direction: column; gap: 6px; }
+        .ca-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--ink-soft);
+            line-height: 1.5;
+        }
+        .ca-item::before {
+            content: '›';
+            color: var(--accent);
+            font-size: 14px;
+            line-height: 1.2;
+            flex-shrink: 0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+ 
+<!-- ── TOOLBAR ── -->
+<div class="toolbar">
+    <div class="toolbar-brand">Resumé<span>Craft</span></div>
+    <button class="print-btn" onclick="window.print()">
+        ↓ Download PDF
+    </button>
+</div>
+ 
+<!-- ══ RESUME ══ -->
+<div class="resume">
+ 
+    <!-- ════════ SIDEBAR ════════ -->
+    <aside class="sidebar">
+        <!-- Top: photo + name -->
+        <div class="sb-top">
+            <div class="avatar-ring">
+                <div class="avatar-inner">
+                    {% if photo_url %}
+                        <img src="{{ photo_url }}" alt="{{ name }}">
+                    {% else %}
+                        <span class="avatar-placeholder">
+                            {% if name %}{{ name|first|upper }}{% else %}?{% endif %}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="sb-name">{{ name }}</div>
+            {% if job_title %}<div class="sb-title">{{ job_title }}</div>{% endif %}
+            <div class="sb-rule"></div>
+        </div>
+ 
+        <!-- Body sections -->
+        <div class="sb-body">
+ 
+            <!-- Contact -->
+            <div class="sb-section">
+                <div class="sb-label">Contact</div>
+                <ul class="c-list">
+                    {% if email %}
+                    <li>
+                        <span class="ico">✉</span>
+                        <a href="mailto:{{ email }}">{{ email }}</a>
+                    </li>
+                    {% endif %}
+                    {% if phone %}
+                    <li><span class="ico">☏</span>{{ phone }}</li>
+                    {% endif %}
+                    {% if location %}
+                    <li><span class="ico">◉</span>{{ location }}</li>
+                    {% endif %}
+                    {% if linkedin %}
+                    <li><span class="ico">in</span><a href="{{ linkedin }}" target="_blank">{{ linkedin }}</a></li>
+                    {% endif %}
+                    {% if github %}
+                    <li><span class="ico">⌥</span><a href="{{ github }}" target="_blank">{{ github }}</a></li>
+                    {% endif %}
+                    {% if website %}
+                    <li><span class="ico">⊕</span><a href="{{ website }}" target="_blank">{{ website }}</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+ 
+            <!-- Skills -->
+            {% if skills %}
+            <div class="sb-section">
+                <div class="sb-label">Skills</div>
+                <div class="tag-wrap">
+                    {% for skill in skills %}
+                        {% if skill %}
+                        <span class="skill-tag">{{ skill }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+ 
+            <!-- Languages -->
+            {% if languages %}
+            <div class="sb-section">
+                <div class="sb-label">Languages</div>
+                {% for lang in languages %}
+                    {% if lang %}
+                    <div class="lang-row">
+                        <span class="lang-name-txt">{{ lang }}</span>
+                        <div class="lang-dots">
+                            <div class="lang-dot on"></div>
+                            <div class="lang-dot on"></div>
+                            <div class="lang-dot on"></div>
+                            <div class="lang-dot"></div>
+                            <div class="lang-dot"></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+ 
+            <!-- Experience count -->
+            {% if years_experience %}
+            <div class="sb-section">
+                <div class="sb-label">Experience</div>
+                <div class="exp-big">{{ years_experience }}<span>yrs</span></div>
+                <div class="exp-sub">Total experience</div>
+            </div>
+            {% endif %}
+ 
+            <!-- Interests -->
+            {% if interests %}
+            <div class="sb-section">
+                <div class="sb-label">Interests</div>
+                <div class="tag-wrap">
+                    {% for interest in interests %}
+                        {% if interest %}
+                        <span class="interest-tag">{{ interest }}</span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+ 
+        </div>
+    </aside>
+ 
+    <!-- ════════ MAIN ════════ -->
+    <main class="main">
+ 
+        <!-- Profile / Summary -->
+        {% if summary %}
+        <div class="section">
+            <div class="sec-head">
+                <span class="sec-dot"></span>
+                <div class="sec-title">Profile</div>
+                <div class="sec-line"></div>
+            </div>
+            <p class="profile-text">{{ summary }}</p>
+        </div>
+        {% endif %}
+ 
+        <!-- Work Experience -->
+        {% if experiences %}
+        <div class="section">
+            <div class="sec-head">
+                <span class="sec-dot"></span>
+                <div class="sec-title">Work Experience</div>
+                <div class="sec-line"></div>
+            </div>
+            <div class="timeline">
+                {% for exp in experiences %}
+                <div class="tl-entry">
+                    <div class="tl-line">
+                        <div class="tl-dot"></div>
+                        <div class="tl-track"></div>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-header">
+                            <div class="tl-title">{{ exp.title }}</div>
+                            <div class="tl-date">{{ exp.start }}{% if exp.end %} — {{ exp.end }}{% endif %}</div>
+                        </div>
+                        <div class="tl-sub">
+                            <span class="tl-org">{{ exp.company }}</span>
+                            {% if exp.location %}<span class="tl-loc">{{ exp.location }}</span>{% endif %}
+                        </div>
+                        {% if exp.description %}
+                        <div class="tl-desc">{{ exp.description|linebreaks }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Education -->
+        {% if educations %}
+        <div class="section">
+            <div class="sec-head">
+                <span class="sec-dot"></span>
+                <div class="sec-title">Education</div>
+                <div class="sec-line"></div>
+            </div>
+            <div class="timeline">
+                {% for edu in educations %}
+                <div class="tl-entry">
+                    <div class="tl-line">
+                        <div class="tl-dot"></div>
+                        <div class="tl-track"></div>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-header">
+                            <div class="tl-title">{{ edu.degree }}</div>
+                            <div class="tl-date">{{ edu.year }}</div>
+                        </div>
+                        <div class="tl-sub">
+                            <span class="tl-org">{{ edu.institution }}</span>
+                            {% if edu.score %}<span class="tl-loc">{{ edu.score }}</span>{% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Projects -->
+        {% if projects %}
+        <div class="section">
+            <div class="sec-head">
+                <span class="sec-dot"></span>
+                <div class="sec-title">Projects</div>
+                <div class="sec-line"></div>
+            </div>
+            <div class="proj-list">
+                {% for proj in projects %}
+                <div class="proj-card">
+                    <div class="proj-head">
+                        <div class="proj-name">{{ proj.name }}</div>
+                        {% if proj.tech %}
+                        <span class="proj-tech-badge">{{ proj.tech }}</span>
+                        {% endif %}
+                        {% if proj.link %}
+                        <a class="proj-link" href="{{ proj.link }}" target="_blank">↗ View project</a>
+                        {% endif %}
+                    </div>
+                    {% if proj.description %}
+                    <div class="proj-desc">{{ proj.description }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+ 
+        <!-- Certifications & Awards -->
+        {% if certifications or awards %}
+        <div class="section">
+            <div class="sec-head">
+                <span class="sec-dot"></span>
+                <div class="sec-title">Certifications & Awards</div>
+                <div class="sec-line"></div>
+            </div>
+            <div class="two-col">
+                {% if certifications %}
+                <div>
+                    <div class="ca-sub-title">Certifications</div>
+                    <div class="ca-list">
+                        {% for cert in certifications %}
+                            {% if cert %}<div class="ca-item">{{ cert }}</div>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% if awards %}
+                <div>
+                    <div class="ca-sub-title">Awards</div>
+                    <div class="ca-list">
+                        {% for award in awards %}
+                            {% if award %}<div class="ca-item">{{ award }}</div>{% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+ 
+    </main>
+</div>
+ 
+</body>
+</html>

@@ -1,0 +1,648 @@
+the old homepage  to be used as a landing page for the resume builder, showcasing features and templates.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Folio — Craft Your Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+ :root {
+            --bg:#060810;
+            --bg2:      #090c18;
+            --surface:  rgba(255,255,255,.03);
+            --surface2: rgba(255,255,255,.055);
+            --indigo:   #5c6fff;
+            --indigo2:  #4355e8;
+            --violet:   #a855f7;
+            --cyan:     #22d3ee;
+            --text:     #e2e8f7;
+            --muted:    #6b7a9e;
+            --dim:      #374162;
+            --border:   rgba(92,111,255,.15);
+            --border2:  rgba(255,255,255,.07);
+            --danger:   #f43f5e;
+            --success:  #22d3ee;
+}
+        }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{scroll-behavior:smooth}
+        body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
+
+        /* Cursor */
+        #cur{position:fixed;width:8px;height:8px;background:var(--indigo);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:screen;transition:width .15s,height .15s}
+        #cur-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(92,111,255,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s}
+
+        /* Ambient orbs */
+        .orb{position:fixed;border-radius:50%;filter:blur(110px);pointer-events:none;z-index:0}
+        .o1{width:650px;height:650px;background:var(--indigo);top:-220px;left:-120px;opacity:.13}
+        .o2{width:550px;height:550px;background:var(--violet);bottom:-160px;right:-120px;opacity:.11}
+        .o3{width:350px;height:350px;background:var(--cyan);top:45%;left:42%;transform:translate(-50%,-50%);opacity:.05}
+
+        /* Glass helper */
+        .glass{background:var(--glass);backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);border:1px solid var(--gb)}
+
+        /* NAV */
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 52px;height:64px;display:flex;align-items:center;justify-content:space-between;transition:background .3s,border-color .3s}
+        nav.sc{background:rgba(6,8,16,.75);backdrop-filter:blur(20px);border-bottom:1px solid var(--border2)}
+        .logo{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-.5px}
+        .logo span{color:var(--indigo)}
+        .nlinks{display:flex;align-items:center;gap:32px;list-style:none}
+        .nlinks a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+        .nlinks a:hover{color:var(--text)}
+        .npill{background:var(--indigo)!important;color:#fff!important;padding:8px 20px;border-radius:100px;font-size:13px!important;font-weight:500!important;transition:background .2s,transform .15s!important}
+        .npill:hover{background:var(--indigo2)!important;transform:scale(1.04)}
+
+        /* HERO */
+        .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:130px 24px 90px;position:relative;z-index:1}
+        .hero-mesh{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(92,111,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(92,111,255,.05) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 10%,transparent 100%)}
+        .ho{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none}
+        .ho.a{width:320px;height:320px;background:rgba(168,85,247,.1);top:18%;left:4%}
+        .ho.b{width:260px;height:260px;background:rgba(34,211,238,.08);top:22%;right:5%}
+
+        /* Floating badges */
+        .fb{position:absolute;padding:8px 14px;border-radius:100px;font-size:12px;font-weight:500;backdrop-filter:blur(12px);border:1px solid var(--gb);background:rgba(255,255,255,.04);color:var(--muted);pointer-events:none;white-space:nowrap}
+        .fb.f1{top:23%;left:5%;animation:flt 4s ease-in-out infinite}
+        .fb.f2{top:40%;right:4%;animation:flt 4s 1.5s ease-in-out infinite}
+        .fb.f3{bottom:26%;left:6%;animation:flt 4s .8s ease-in-out infinite}
+        @keyframes flt{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+        .fd{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:6px;vertical-align:middle}
+        .fi{background:var(--indigo)}.fv{background:var(--violet)}.fc{background:var(--cyan)}
+
+        .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 16px 6px 8px;border-radius:100px;margin-bottom:30px;font-size:12px;font-weight:500;color:#a5b4fc;letter-spacing:.5px;animation:fu .6s ease both}
+        .ew{width:24px;height:24px;border-radius:50%;background:rgba(92,111,255,.2);display:flex;align-items:center;justify-content:center;font-size:11px}
+
+        h1.hero-h1{font-family:'Syne',sans-serif;font-size:clamp(52px,9vw,108px);font-weight:800;line-height:.94;letter-spacing:-3px;color:var(--text);max-width:900px;margin-bottom:6px;animation:fu .7s .1s ease both}
+        .ital{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;background:linear-gradient(135deg,var(--indigo),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0}
+
+        .hsub{font-size:clamp(15px,2vw,18px);color:var(--muted);font-weight:300;max-width:450px;line-height:1.78;margin:26px auto 42px;animation:fu .7s .2s ease both}
+
+        .hbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fu .7s .3s ease both}
+        .btnm{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;border-radius:100px;background:var(--indigo);color:#fff;font-size:14px;font-weight:500;text-decoration:none;letter-spacing:.3px;transition:all .2s;position:relative;overflow:hidden}
+        .btnm::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity .2s}
+        .btnm:hover{background:var(--indigo2);transform:translateY(-2px);box-shadow:0 16px 40px rgba(92,111,255,.35)}
+        .btnm:hover::before{opacity:1}
+        .btnm .ar{transition:transform .2s}
+        .btnm:hover .ar{transform:translateX(4px)}
+        .btno{display:inline-flex;align-items:center;gap:8px;padding:15px 28px;border-radius:100px;border:1px solid var(--gb);color:var(--muted);font-size:14px;text-decoration:none;transition:all .2s}
+        .btno:hover{border-color:rgba(92,111,255,.4);color:var(--text);background:rgba(92,111,255,.06)}
+
+        /* Hero stats */
+        .hstats{display:flex;gap:0;margin-top:70px;padding-top:40px;border-top:1px solid var(--border2);animation:fu .7s .4s ease both}
+        .stat{padding:0 44px;text-align:center;border-right:1px solid var(--border2)}
+        .stat:last-child{border-right:none}
+        .sn{font-family:'Syne',sans-serif;font-size:38px;font-weight:800;line-height:1;background:linear-gradient(135deg,#fff,var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .sl{font-size:12px;color:var(--muted);margin-top:5px;letter-spacing:.5px}
+
+        @keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+        /* TICKER */
+        .ticker-wrap{border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);padding:14px 0;overflow:hidden;background:rgba(92,111,255,.025);position:relative;z-index:1}
+        .ticker-track{display:flex;animation:tkr 32s linear infinite;white-space:nowrap}
+        .ti{display:inline-flex;align-items:center;gap:14px;padding:0 28px;font-size:12px;font-weight:500;color:var(--dim);letter-spacing:1.5px;text-transform:uppercase}
+        .tg{width:5px;height:5px;border-radius:50%;background:var(--indigo);flex-shrink:0}
+        @keyframes tkr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+        /* SECTIONS */
+        .sec{padding:110px 64px;position:relative;z-index:1}
+        .sec-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--indigo);margin-bottom:14px}
+        .sec-tag::after{content:'';display:inline-block;width:20px;height:1px;background:var(--indigo)}
+        .sh2{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,54px);font-weight:800;line-height:1.05;letter-spacing:-1.5px;color:var(--text)}
+        .sh2 i{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;background:linear-gradient(135deg,var(--violet),var(--indigo));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0}
+        .sp{font-size:15px;color:var(--muted);font-weight:300;line-height:1.8;max-width:440px}
+
+        /* FEATURES */
+        .fhead{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end;margin-bottom:60px}
+        .fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+        .fc-card{border-radius:20px;padding:28px;position:relative;overflow:hidden;transition:transform .3s,border-color .3s;cursor:default;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb)}
+        .fc-card:hover{transform:translateY(-5px);border-color:rgba(92,111,255,.3)}
+        .fc-card::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);transition:left .5s}
+        .fc-card:hover::after{left:160%}
+        .fc-card.wide{grid-column:span 2}
+        .fc-card.acc{background:linear-gradient(135deg,rgba(92,111,255,.12),rgba(168,85,247,.08));border-color:rgba(92,111,255,.22)}
+        .fic{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:18px;background:rgba(92,111,255,.1);border:1px solid rgba(92,111,255,.18)}
+        .ft{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+        .fd2{font-size:13px;color:var(--muted);line-height:1.7}
+        .fbadge{display:inline-block;margin-top:14px;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:500;letter-spacing:.5px;background:rgba(92,111,255,.1);color:#a5b4fc;border:1px solid rgba(92,111,255,.18)}
+
+        /* HOW */
+        .how-inner{max-width:1100px;margin:0 auto}
+        .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative}
+        .steps::before{content:'';position:absolute;top:27px;left:12.5%;right:12.5%;height:1px;background:linear-gradient(90deg,transparent,var(--indigo),var(--violet),var(--indigo),transparent);opacity:.2}
+        .step{padding:0 24px;text-align:center}
+        .sc2{width:56px;height:56px;border-radius:50%;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--indigo);background:var(--glass);backdrop-filter:blur(16px);border:1px solid rgba(92,111,255,.25);transition:all .25s}
+        .step:hover .sc2{background:rgba(92,111,255,.18);border-color:rgba(92,111,255,.5);box-shadow:0 0 30px rgba(92,111,255,.2)}
+        .stitle{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+        .sdesc{font-size:13px;color:var(--muted);line-height:1.65}
+
+        /* TEMPLATES */
+        .tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+        .tc{border-radius:18px;overflow:hidden;border:1px solid var(--gb);background:var(--glass);backdrop-filter:blur(10px);transition:transform .3s,border-color .3s,box-shadow .3s;cursor:pointer}
+        .tc:hover{transform:translateY(-8px) scale(1.01);border-color:rgba(92,111,255,.4);box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(92,111,255,.12)}
+        .tthumb{height:160px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:40px}
+        .tthumb::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(6,8,16,.95) 100%)}
+        .tM{background:linear-gradient(135deg,#0f2027,#1b3a4b,#2c5f7a)}
+        .tC{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)}
+        .tN{background:linear-gradient(135deg,#f8f8f2,#e8e4d8,#d4cfc2)}
+        .tE{background:linear-gradient(135deg,#0d0d0d,#1a0a0a,#2d1515)}
+        .tinfo{padding:16px 18px 20px}
+        .tname{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+        .tsub{font-size:12px;color:var(--muted)}
+        .tpill{display:inline-block;margin-top:8px;padding:3px 10px;border-radius:100px;font-size:10px;font-weight:500;background:rgba(92,111,255,.1);color:#a5b4fc;border:1px solid rgba(92,111,255,.15)}
+
+        /* BENTO */
+        .bgrid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:auto auto auto;gap:14px}
+        .bc{border-radius:20px;padding:26px;transition:transform .25s,border-color .25s;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--gb)}
+        .bc:hover{transform:scale(1.025);border-color:rgba(92,111,255,.28)}
+        .bc.s2{grid-column:span 2}
+        .bc.s3{grid-column:span 3}
+        .bico{font-size:22px;margin-bottom:12px}
+        .btit{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px}
+        .bdesc{font-size:12px;color:var(--muted);line-height:1.65}
+        .bnum{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--indigo),var(--violet));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .btags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+        .btag{padding:4px 10px;border-radius:100px;font-size:11px;color:#a5b4fc;background:rgba(92,111,255,.1);border:1px solid rgba(92,111,255,.15)}
+        .mtl{margin-top:10px}
+        .mti{display:flex;align-items:flex-start;gap:10px;margin-bottom:7px;font-size:12px;color:var(--muted)}
+        .mtd{width:7px;height:7px;border-radius:50%;background:var(--indigo);flex-shrink:0;margin-top:4px}
+
+        /* CTA */
+        .cta-sec{padding:110px 64px;text-align:center;position:relative;z-index:1;overflow:hidden}
+        .cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(92,111,255,.1) 0%,transparent 70%);pointer-events:none}
+        .cr{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border:1px solid rgba(92,111,255,.1);border-radius:50%;animation:rp 3s ease infinite;pointer-events:none}
+        .cr.r1{width:400px;height:400px;animation-delay:0s}
+        .cr.r2{width:600px;height:600px;animation-delay:.8s}
+        .cr.r3{width:800px;height:800px;animation-delay:1.6s}
+        @keyframes rp{0%,100%{opacity:.2;transform:translate(-50%,-50%) scale(1)}50%{opacity:.05;transform:translate(-50%,-50%) scale(1.05)}}
+        .cta-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+        .cta-h{font-family:'Syne',sans-serif;font-size:clamp(40px,6vw,70px);font-weight:800;line-height:.95;letter-spacing:-2px;color:var(--text);margin-bottom:20px}
+        .cta-h i{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;background:linear-gradient(135deg,var(--indigo),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:0}
+        .cta-s{font-size:16px;color:var(--muted);font-weight:300;line-height:1.75;margin-bottom:44px}
+
+        /* FOOTER */
+        footer{border-top:1px solid var(--border2);padding:36px 64px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+        .flogo{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--text);letter-spacing:-.5px}
+        .flogo span{color:var(--indigo)}
+        .fcopy{font-size:12px;color:var(--dim)}
+        .flinks{display:flex;gap:24px}
+        .flinks a{font-size:12px;color:var(--dim);text-decoration:none;transition:color .2s}
+        .flinks a:hover{color:var(--indigo)}
+
+        /* SCROLL REVEAL */
+        .rv{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
+        .rv.on{opacity:1;transform:none}
+        .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+        /* RESPONSIVE */
+        @media(max-width:900px){
+            nav{padding:0 24px}.nlinks{display:none}
+            .sec{padding:70px 24px}.cta-sec{padding:70px 24px}
+            footer{padding:28px 24px;flex-direction:column;gap:16px;text-align:center}
+            .fhead{grid-template-columns:1fr}.tgrid{grid-template-columns:1fr 1fr}
+            .fgrid{grid-template-columns:1fr 1fr}.fc-card.wide{grid-column:span 1}
+            .steps{grid-template-columns:1fr 1fr;gap:40px}.steps::before{display:none}
+            .bgrid{grid-template-columns:1fr 1fr}.bc.s2,.bc.s3{grid-column:span 1}
+            .hstats{gap:0}.stat{padding:0 18px}.fb{display:none}
+        }
+        @media(max-width:600px){
+            .fgrid,.steps,.tgrid,.bgrid{grid-template-columns:1fr}
+            .hstats{flex-wrap:wrap}
+        }
+
+        /* ===== 3D Rotating Cards ===== */
+
+        .wrapper {
+        width: 100%;
+        height: 420px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        }
+
+        .inner {
+        --w: 120px;
+        --h: 170px;
+        --translateZ: calc((var(--w) + var(--h)) + 20px);
+        --rotateX: -15deg;
+        --perspective: 1000px;
+
+        position: absolute;
+        width: var(--w);
+        height: var(--h);
+
+        transform-style: preserve-3d;
+        transform: perspective(var(--perspective));
+        animation: rotating 18s linear infinite;
+        }
+
+        @keyframes rotating {
+        from {
+            transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg);
+        }
+        to {
+            transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(360deg);
+        }
+        }
+
+        .card {
+        position: absolute;
+        inset: 0;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 2px solid rgba(var(--color-card),0.8);
+
+        transform:
+            rotateY(calc((360deg / var(--quantity)) * var(--index)))
+            translateZ(var(--translateZ));
+        }
+
+        .img {
+        width: 100%;
+        height: 100%;
+        background:
+            radial-gradient(circle,
+            rgba(var(--color-card),0.3) 0%,
+            rgba(var(--color-card),0.7) 70%,
+            rgba(var(--color-card),1) 100%);
+        }
+        
+    </style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<!-- NAV -->
+<nav id="nav">
+    <a href="#" class="logo" style="color: blue;">  Folio</a>
+    <ul class="nlinks">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">Process</a></li>
+        <li><a href="#templates">Templates</a></li>
+        <li><a href="#fields">Sections</a></li>
+        <li><a href="{% url 'form' %}" class="npill">Build Resume ↗</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-mesh"></div>
+    <div class="ho a"></div>
+    <div class="ho b"></div>
+
+    <div class="fb f1"><span class="fd fi"></span>ATS Optimised</div>
+    <div class="fb f2"><span class="fd fv"></span>PDF in one click</div>
+    <div class="fb f3"><span class="fd fc"></span>Zero data stored</div>
+
+    <div class="eyebrow glass">
+        <span class="ew">✦</span>
+        Free · No signup · Instant PDF export
+    </div>
+
+    <h1 class="hero-h1">
+        Your résumé,<br><span class="ital">reimagined</span>
+    </h1>
+
+    <p class="hsub">
+        Fill one beautiful form. Walk away with a professional resume that gets interviews — not ignored.
+    </p>
+
+    <div class="hbtns">
+        <a href="{% url 'form' %}" class="btnm">Start for free <span class="ar">→</span></a>
+        <a href="#how" class="btno">See how it works</a>
+    </div>
+
+    <div class="hstats">
+        <div class="stat"><div class="sn">4</div><div class="sl">Templates</div></div>
+        <div class="stat"><div class="sn">60s</div><div class="sl">To generate</div></div>
+        <div class="stat"><div class="sn">100%</div><div class="sl">Free forever</div></div>
+        <div class="stat"><div class="sn">∞</div><div class="sl">Downloads</div></div>
+    </div>
+</section>
+
+<! -- 3D cards -->
+<section class="sec">
+    <div style="text-align:center; margin-bottom:40px;">
+        <div class="sec-tag">Live Preview</div>
+        <h2 class="sh2">Creative <i>Resume Styles</i></h2>
+    </div>
+
+    <div class="wrapper">
+      <div class="inner" style="--quantity: 10;">
+
+        <div class="card" style="--index: 0;--color-card: 142,249,252;"><div class="img"></div></div>
+        <div class="card" style="--index: 1;--color-card: 142,252,204;"><div class="img"></div></div>
+        <div class="card" style="--index: 2;--color-card: 142,252,157;"><div class="img"></div></div>
+        <div class="card" style="--index: 3;--color-card: 215,252,142;"><div class="img"></div></div>
+        <div class="card" style="--index: 4;--color-card: 252,252,142;"><div class="img"></div></div>
+        <div class="card" style="--index: 5;--color-card: 252,208,142;"><div class="img"></div></div>
+        <div class="card" style="--index: 6;--color-card: 252,142,142;"><div class="img"></div></div>
+        <div class="card" style="--index: 7;--color-card: 252,142,239;"><div class="img"></div></div>
+        <div class="card" style="--index: 8;--color-card: 204,142,252;"><div class="img"></div></div>
+        <div class="card" style="--index: 9;--color-card: 142,202,252;"><div class="img"></div></div>
+
+      </div>
+    </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+    <div class="ticker-track" id="ticker">
+        <span class="ti"><span class="tg"></span>Smart Layout Engine</span>
+        <span class="ti"><span class="tg"></span>Photo Upload</span>
+        <span class="ti"><span class="tg"></span>Work Experience Timeline</span>
+        <span class="ti"><span class="tg"></span>Skills & Languages</span>
+        <span class="ti"><span class="tg"></span>Project Showcase</span>
+        <span class="ti"><span class="tg"></span>Certifications & Awards</span>
+        <span class="ti"><span class="tg"></span>LinkedIn & GitHub Links</span>
+        <span class="ti"><span class="tg"></span>One-Click PDF Export</span>
+        <span class="ti"><span class="tg"></span>Smart Layout Engine</span>
+        <span class="ti"><span class="tg"></span>Photo Upload</span>
+        <span class="ti"><span class="tg"></span>Work Experience Timeline</span>
+        <span class="ti"><span class="tg"></span>Skills & Languages</span>
+        <span class="ti"><span class="tg"></span>Project Showcase</span>
+        <span class="ti"><span class="tg"></span>Certifications & Awards</span>
+        <span class="ti"><span class="tg"></span>LinkedIn & GitHub Links</span>
+        <span class="ti"><span class="tg"></span>One-Click PDF Export</span>
+    </div>
+</div>
+
+
+
+
+
+<!-- FEATURES -->
+<section class="sec" id="features">
+    <div style="max-width:1240px;margin:0 auto">
+        <div class="fhead rv">
+            <div>
+                <div class="sec-tag">Features</div>
+                <h2 class="sh2">Built to get you<br>the <i>interview</i></h2>
+            </div>
+            <p class="sp">Every feature exists to make your resume better — not to upsell you on a plan you don't need.</p>
+        </div>
+        <div class="fgrid">
+            <div class="fc-card wide acc rv d1">
+                <div class="fic">⚡</div>
+                <div class="ft">Instant generation, zero friction</div>
+                <div class="fd2">Submit the form and your resume renders immediately — no account, no waiting, no email confirmation. Built on Django, everything happens server-side in milliseconds.</div>
+                <span class="fbadge">Core Engine</span>
+            </div>
+            <div class="fc-card rv d2">
+                <div class="fic">🎨</div>
+                <div class="ft">4 Pro Templates</div>
+                <div class="fd2">Modern, Classic, Minimal, Executive — each designed for different industries and roles.</div>
+            </div>
+            <div class="fc-card rv d1">
+                <div class="fic">📄</div>
+                <div class="ft">One-Click PDF</div>
+                <div class="fd2">Print-perfect PDF directly from the browser. A4 and Letter ready, no third-party tools.</div>
+            </div>
+            <div class="fc-card rv d2">
+                <div class="fic">📷</div>
+                <div class="ft">Photo Upload</div>
+                <div class="fd2">Add a headshot — renders in a perfect circular frame on the resume sidebar.</div>
+            </div>
+            <div class="fc-card rv d3">
+                <div class="fic">🔗</div>
+                <div class="ft">Clickable Links</div>
+                <div class="fd2">LinkedIn, GitHub, and portfolio links are live and clickable in the generated resume.</div>
+            </div>
+            <div class="fc-card rv d1">
+                <div class="fic">➕</div>
+                <div class="ft">Unlimited Blocks</div>
+                <div class="fd2">Add as many jobs, projects, and certifications as needed — no caps, no paywalls.</div>
+            </div>
+            <div class="fc-card rv d2">
+                <div class="fic">🔒</div>
+                <div class="ft">Private by Design</div>
+                <div class="fd2">Nothing is persisted. Your data lives in the form and nowhere else.</div>
+            </div>
+            <div class="fc-card rv d3">
+                <div class="fic">📱</div>
+                <div class="ft">Mobile Ready</div>
+                <div class="fd2">The form adapts to any screen. Fill it in on your phone, download on your laptop.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW -->
+<section class="sec" id="how" style="border-top:1px solid var(--border2);border-bottom:1px solid var(--border2)">
+    <div class="how-inner">
+        <div class="rv" style="margin-bottom:60px">
+            <div class="sec-tag">Process</div>
+            <h2 class="sh2">Four steps to a<br><i>perfect resume</i></h2>
+        </div>
+        <div class="steps">
+            <div class="step rv d1">
+                <div class="sc2">01</div>
+                <div class="stitle">Fill the form</div>
+                <div class="sdesc">Enter your info, work history, skills, education, and projects. Add as many blocks as you need.</div>
+            </div>
+            <div class="step rv d2">
+                <div class="sc2">02</div>
+                <div class="stitle">Pick a template</div>
+                <div class="sdesc">Choose one of four professionally designed templates at the bottom of the form.</div>
+            </div>
+            <div class="step rv d3">
+                <div class="sc2">03</div>
+                <div class="stitle">Generate</div>
+                <div class="sdesc">Hit Generate and your full resume renders instantly — no loading spinner, no delay.</div>
+            </div>
+            <div class="step rv d4">
+                <div class="sc2">04</div>
+                <div class="stitle">Download PDF</div>
+                <div class="sdesc">One button converts your resume to a print-perfect PDF ready to send to recruiters.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEMPLATES -->
+<section class="sec" id="templates">
+    <div style="max-width:1200px;margin:0 auto">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:48px" class="rv">
+            <div>
+                <div class="sec-tag">Templates</div>
+                <h2 class="sh2">Four <i>distinct</i> styles</h2>
+            </div>
+            <a href="{% url 'form' %}" class="btno" style="font-size:13px">Browse all →</a>
+        </div>
+        <div class="tgrid">
+            <div class="tc rv d1">
+                <div class="tthumb tM">🎨</div>
+                <div class="tinfo">
+                    <div class="tname">Modern</div>
+                    <div class="tsub">Bold sidebar, two-column, gold accents</div>
+                    <span class="tpill">Most popular</span>
+                </div>
+            </div>
+            <div class="tc rv d2">
+                <div class="tthumb tC">📄</div>
+                <div class="tinfo">
+                    <div class="tname">Classic</div>
+                    <div class="tsub">Single column, ATS-safe structure</div>
+                    <span class="tpill">ATS friendly</span>
+                </div>
+            </div>
+            <div class="tc rv d3">
+                <div class="tthumb tN">✦</div>
+                <div class="tinfo">
+                    <div class="tname">Minimal</div>
+                    <div class="tsub">Whitespace-first, elegant type</div>
+                    <span class="tpill">Clean</span>
+                </div>
+            </div>
+            <div class="tc rv d4">
+                <div class="tthumb tE">💼</div>
+                <div class="tinfo">
+                    <div class="tname">Executive</div>
+                    <div class="tsub">Premium dark look for leadership</div>
+                    <span class="tpill">Premium</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BENTO -->
+<section class="sec" id="fields" style="border-top:1px solid var(--border2)">
+    <div style="max-width:1100px;margin:0 auto">
+        <div class="rv" style="margin-bottom:52px">
+            <div class="sec-tag">What's included</div>
+            <h2 class="sh2">Every section a<br>recruiter <i>expects</i></h2>
+        </div>
+        <div class="bgrid">
+            <div class="bc s2 rv d1">
+                <div class="bico">👤</div>
+                <div class="btit">Personal Information</div>
+                <div class="bdesc">Full name, job title, email, phone, location, LinkedIn, GitHub, website, and profile photo — all in one clean header block.</div>
+            </div>
+            <div class="bc rv d2">
+                <div class="bnum">14</div>
+                <div class="btit">Sections</div>
+                <div class="bdesc">Every field a modern recruiter wants to see.</div>
+            </div>
+            <div class="bc rv d3">
+                <div class="bico">🔧</div>
+                <div class="btit">Skills & Languages</div>
+                <div class="btags">
+                    <span class="btag">React</span><span class="btag">Django</span><span class="btag">Python</span><span class="btag">+ more</span>
+                </div>
+            </div>
+            <div class="bc rv d1">
+                <div class="bico">🏢</div>
+                <div class="btit">Work Experience</div>
+                <div class="mtl">
+                    <div class="mti"><span class="mtd"></span>Job title + company</div>
+                    <div class="mti"><span class="mtd"></span>Dates + location</div>
+                    <div class="mti"><span class="mtd"></span>Description & achievements</div>
+                </div>
+            </div>
+            <div class="bc rv d2">
+                <div class="bico">🎓</div>
+                <div class="btit">Education</div>
+                <div class="bdesc">Degree, institution, graduation year, and CGPA or percentage. Add multiple degrees.</div>
+            </div>
+            <div class="bc s2 rv d3">
+                <div class="bico">🚀</div>
+                <div class="btit">Projects</div>
+                <div class="bdesc">Project name, tech stack, live/GitHub link, and description. Unlimited projects. Each card shows a clickable link directly in the resume.</div>
+            </div>
+            <div class="bc rv d1">
+                <div class="bico">🏆</div>
+                <div class="btit">Certifications & Awards</div>
+                <div class="bdesc">Two side-by-side lists in the resume for credentials and recognition.</div>
+            </div>
+            <div class="bc rv d2">
+                <div class="bico">🌐</div>
+                <div class="btit">Languages</div>
+                <div class="bdesc">Spoken languages and proficiency levels displayed cleanly in the sidebar.</div>
+            </div>
+            <div class="bc rv d3">
+                <div class="bico">⭐</div>
+                <div class="btit">Interests</div>
+                <div class="bdesc">Optional section shown as clean tags in the sidebar — adds personality.</div>
+            </div>
+            <div class="bc rv d4">
+                <div class="bico">📝</div>
+                <div class="btit">Summary</div>
+                <div class="bdesc">2–3 line professional bio shown at the top of the main content area.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-sec">
+    <div class="cta-glow"></div>
+    <div class="cr r1"></div>
+    <div class="cr r2"></div>
+    <div class="cr r3"></div>
+    <div class="cta-inner rv">
+        <h2 class="cta-h">Start building<br>your <i>next chapter</i></h2>
+        <p class="cta-s">No account. No credit card. No catch. A beautiful resume in under five minutes.</p>
+        <a href="{% url 'form' %}" class="btnm" style="padding:18px 48px;font-size:15px">
+            Build my resume <span class="ar">→</span>
+        </a>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="flogo">Resumé<span>Craft</span></div>
+    <div class="fcopy">Built with Django · No data stored · Free forever</div>
+    <div class="flinks">
+        <a href="#features">Features</a>
+        <a href="#templates">Templates</a>
+        <a href="{% url 'form' %}">Build Resume</a>
+    </div>
+</footer>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let rx=0,ry=0,mx=0,my=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.style.width=cur.style.height='20px';ring.style.width=ring.style.height='52px'});
+    el.addEventListener('mouseleave',()=>{cur.style.width=cur.style.height='8px';ring.style.width=ring.style.height='32px'});
+});
+
+// Nav scroll
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('sc',scrollY>40));
+
+// Scroll reveal
+const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}})},{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+// Ticker pause on hover
+const t=document.getElementById('ticker');
+t.addEventListener('mouseenter',()=>t.style.animationPlayState='paused');
+t.addEventListener('mouseleave',()=>t.style.animationPlayState='running');
+
+// 3D tilt on cards
+document.querySelectorAll('.fc-card,.tc,.bc').forEach(c=>{
+    c.style.transformStyle='preserve-3d';
+    c.style.perspective='800px';
+    c.addEventListener('mousemove',e=>{
+        const r=c.getBoundingClientRect();
+        const x=(e.clientX-r.left)/r.width-.5;
+        const y=(e.clientY-r.top)/r.height-.5;
+        c.style.transform=`translateY(-5px) rotateX(${(-y*7).toFixed(1)}deg) rotateY(${(x*7).toFixed(1)}deg)`;
+    });
+    c.addEventListener('mouseleave',()=>c.style.transform='');
+});
+</script>
+</body>
+</html>

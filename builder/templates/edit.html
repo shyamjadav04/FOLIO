@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Resume</title>
+</head>
+<body>
+
+<h1>Edit Resume</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <input type="text" name="name" value="{{ resume.name }}"><br><br>
+
+    <label>Skills</label><br>
+    {% for skill in skills %}
+        <input type="text" name="skills[]" value="{{ skill }}"><br>
+    {% endfor %}
+
+    <br>
+
+    <label>Projects</label><br>
+    {% for project in projects %}
+        <input type="text" name="projects[]" value="{{ project }}"><br>
+    {% endfor %}
+
+    <br>
+
+    <input type="text" name="education" value="{{ resume.education }}"><br><br>
+
+    <input type="text" name="experience" value="{{ resume.experience }}"><br><br>
+
+    <input type="file" name="photo"><br><br>
+
+    <button type="submit">Update Resume</button>
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResuméCraft — Build Your Resume</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:       #060810;
+            --bg2:      #090c18;
+            --surface:  rgba(255,255,255,.03);
+            --surface2: rgba(255,255,255,.055);
+            --indigo:   #5c6fff;
+            --indigo2:  #4355e8;
+            --violet:   #a855f7;
+            --cyan:     #22d3ee;
+            --text:     #e2e8f7;
+            --muted:    #6b7a9e;
+            --dim:      #374162;
+            --border:   rgba(92,111,255,.15);
+            --border2:  rgba(255,255,255,.07);
+            --danger:   #f43f5e;
+            --success:  #22d3ee;
+        }
+ 
+        *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+        html { scroll-behavior:smooth; }
+ 
+        body {
+            font-family: 'Geist', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0 0 80px;
+            overflow-x: hidden;
+            cursor: none;
+        }
+ 
+        /* ── Cursor ── */
+        #cur { position:fixed; width:8px; height:8px; background:var(--indigo); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:screen; transition:width .15s,height .15s; }
+        #cur-ring { position:fixed; width:30px; height:30px; border:1px solid rgba(92,111,255,.35); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .2s,height .2s; }
+ 
+        /* ── Ambient orbs ── */
+        .orb { position:fixed; border-radius:50%; filter:blur(110px); pointer-events:none; z-index:0; }
+        .o1 { width:500px; height:500px; background:var(--indigo); top:-200px; left:-100px; opacity:.1; }
+        .o2 { width:420px; height:420px; background:var(--violet); bottom:-100px; right:-80px; opacity:.09; }
+        .o3 { width:300px; height:300px; background:var(--cyan); top:50%; right:5%; transform:translateY(-50%); opacity:.05; }
+ 
+        /* ── Grid mesh bg ── */
+        body::before {
+            content:'';
+            position:fixed; inset:0;
+            background-image:
+                linear-gradient(rgba(92,111,255,.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(92,111,255,.04) 1px, transparent 1px);
+            background-size: 70px 70px;
+            mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 30%, transparent 100%);
+            pointer-events:none; z-index:0;
+        }
+ 
+        /* ── NAV ── */
+        nav {
+            position: sticky; top:0; z-index:100;
+            padding: 0 52px; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(6,8,16,.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border2);
+        }
+        .logo { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--text); text-decoration:none; letter-spacing:-.5px; }
+        .logo span { color:var(--indigo); }
+        .nav-back { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); text-decoration:none; transition:color .2s; }
+        .nav-back:hover { color:var(--text); }
+        .nav-back svg { transition:transform .2s; }
+        .nav-back:hover svg { transform:translateX(-3px); }
+ 
+        /* ── Page header ── */
+        .page-hero {
+            position: relative; z-index:1;
+            text-align: center;
+            padding: 64px 24px 48px;
+        }
+        .page-eyebrow {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:6px 16px 6px 8px; border-radius:100px;
+            margin-bottom:24px; font-size:12px; font-weight:500;
+            color:#a5b4fc; letter-spacing:.5px;
+            background:rgba(255,255,255,.03);
+            backdrop-filter:blur(12px);
+            border:1px solid rgba(255,255,255,.07);
+            animation: fu .5s ease both;
+        }
+        .ew { width:22px; height:22px; border-radius:50%; background:rgba(92,111,255,.2); display:flex; align-items:center; justify-content:center; font-size:10px; }
+        .page-h1 {
+            font-family:'Syne',sans-serif;
+            font-size:clamp(40px,6vw,72px);
+            font-weight:800; line-height:.95;
+            letter-spacing:-2px; color:var(--text);
+            animation: fu .6s .1s ease both;
+        }
+        .page-h1 i {
+            font-family:'Instrument Serif',serif;
+            font-style:italic; font-weight:400;
+            background:linear-gradient(135deg,var(--indigo),var(--violet));
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            background-clip:text; letter-spacing:0;
+        }
+        .page-sub {
+            font-size:15px; color:var(--muted); font-weight:300;
+            max-width:420px; line-height:1.75;
+            margin:20px auto 0;
+            animation: fu .6s .2s ease both;
+        }
+ 
+        /* Progress bar */
+        .prog-wrap {
+            position:relative; z-index:1;
+            max-width:780px; margin:0 auto;
+            padding:0 32px 0;
+            animation: fu .6s .3s ease both;
+        }
+        .prog-bar-bg {
+            height:2px; background:rgba(255,255,255,.06); border-radius:2px; margin-bottom:6px;
+        }
+        .prog-bar-fill {
+            height:2px; background:linear-gradient(90deg,var(--indigo),var(--violet));
+            border-radius:2px; width:0%; transition:width .5s ease;
+        }
+        .prog-label { font-size:11px; color:var(--muted); text-align:right; letter-spacing:.5px; }
+ 
+        @keyframes fu { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+ 
+        /* ── Form Wrapper ── */
+        .form-wrap {
+            max-width: 780px;
+            margin: 32px auto 0;
+            padding: 0 32px;
+            position: relative; z-index:1;
+        }
+ 
+        /* ── Section Cards ── */
+        .s-card {
+            background: var(--surface);
+            backdrop-filter: blur(16px) saturate(1.4);
+            -webkit-backdrop-filter: blur(16px) saturate(1.4);
+            border: 1px solid var(--border2);
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 20px;
+            position: relative; overflow:hidden;
+            transition: border-color .3s;
+        }
+        .s-card:hover { border-color: rgba(92,111,255,.25); }
+        .s-card::before {
+            content:''; position:absolute;
+            top:0; left:32px;
+            width:48px; height:2px;
+            background:linear-gradient(90deg,var(--indigo),var(--violet));
+            border-radius:0 0 4px 4px;
+        }
+        /* Shimmer on hover */
+        .s-card::after {
+            content:''; position:absolute;
+            top:0; left:-120%; width:50%; height:100%;
+            background:linear-gradient(90deg,transparent,rgba(255,255,255,.025),transparent);
+            transition:left .6s;
+        }
+        .s-card:hover::after { left:160%; }
+ 
+        .card-head {
+            display:flex; align-items:flex-start; justify-content:space-between;
+            margin-bottom:24px;
+        }
+        .card-title {
+            font-family:'Syne',sans-serif;
+            font-size:17px; font-weight:700; color:var(--text); margin-bottom:3px;
+        }
+        .card-sub { font-size:12px; color:var(--muted); }
+        .card-icon {
+            width:40px; height:40px; border-radius:12px;
+            background:rgba(92,111,255,.1);
+            border:1px solid rgba(92,111,255,.18);
+            display:flex; align-items:center; justify-content:center;
+            font-size:17px; flex-shrink:0;
+        }
+ 
+        /* ── Grid helpers ── */
+        .row2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+        .row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+ 
+        /* ── Field groups ── */
+        .fg { margin-bottom:14px; }
+        .fg:last-child { margin-bottom:0; }
+ 
+        label.lbl {
+            display:block;
+            font-size:11px; font-weight:500;
+            letter-spacing:1.5px; text-transform:uppercase;
+            color:var(--muted); margin-bottom:7px;
+        }
+        label.lbl .req { color:var(--indigo); margin-left:2px; }
+ 
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="url"],
+        input[type="number"],
+        select,
+        textarea {
+            width:100%;
+            padding:12px 16px;
+            background: rgba(255,255,255,.04);
+            border:1px solid var(--border2);
+            border-radius:12px;
+            color:var(--text);
+            font-family:'Geist',sans-serif;
+            font-size:14px; font-weight:300;
+            outline:none;
+            transition:border-color .2s, background .2s, box-shadow .2s;
+            appearance:none;
+        }
+        input::placeholder, textarea::placeholder { color:var(--dim); }
+        input:focus, select:focus, textarea:focus {
+            border-color:rgba(92,111,255,.5);
+            background:rgba(92,111,255,.06);
+            box-shadow:0 0 0 3px rgba(92,111,255,.12);
+        }
+        textarea { resize:vertical; min-height:90px; line-height:1.65; }
+ 
+        select {
+            cursor:pointer;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7a9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-repeat:no-repeat;
+            background-position:right 14px center;
+            padding-right:36px;
+        }
+        select option { background:#111420; color:var(--text); }
+ 
+        /* ── Photo Upload ── */
+        .photo-zone {
+            border:1.5px dashed rgba(92,111,255,.25);
+            border-radius:14px; padding:28px;
+            text-align:center; cursor:pointer;
+            transition:border-color .2s, background .2s;
+            background:rgba(92,111,255,.03);
+            position:relative;
+        }
+        .photo-zone:hover { border-color:rgba(92,111,255,.5); background:rgba(92,111,255,.07); }
+        .photo-zone input[type="file"] {
+            position:absolute; inset:0; opacity:0; cursor:pointer;
+            width:100%; height:100%; border:none; background:none;
+        }
+        .photo-zone input[type="file"]:focus { box-shadow:none; }
+        .pz-icon { font-size:26px; margin-bottom:8px; }
+        .pz-text { font-size:13px; color:var(--muted); line-height:1.6; }
+        .pz-text strong { color:var(--indigo); font-weight:500; }
+        #photo-name { margin-top:8px; font-size:12px; color:var(--cyan); font-weight:500; }
+ 
+        /* ── Dynamic items ── */
+        .dyn-list { display:flex; flex-direction:column; gap:10px; }
+        .dyn-item {
+            display:flex; gap:10px; align-items:center;
+            animation:slideIn .2s ease;
+        }
+        @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+        .dyn-item input, .dyn-item textarea { flex:1; margin:0; }
+ 
+        .rm-btn {
+            width:36px; height:36px; flex-shrink:0;
+            border:1px solid var(--border2); border-radius:10px;
+            background:transparent; color:var(--muted);
+            font-size:17px; display:flex; align-items:center; justify-content:center;
+            cursor:pointer; transition:all .15s; line-height:1;
+        }
+        .rm-btn:hover { border-color:rgba(244,63,94,.4); color:var(--danger); background:rgba(244,63,94,.07); }
+ 
+        /* ── Block items (experience/edu/projects) ── */
+        .block-item {
+            background:rgba(255,255,255,.025);
+            border:1px solid var(--border2);
+            border-radius:16px; padding:22px;
+            margin-bottom:14px; position:relative;
+            animation:slideIn .25s ease;
+        }
+        .block-item:last-child { margin-bottom:0; }
+        .rm-block {
+            position:absolute; top:14px; right:14px;
+            width:28px; height:28px; border-radius:8px;
+            border:1px solid var(--border2); background:transparent;
+            color:var(--muted); font-size:14px;
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; transition:all .15s;
+        }
+        .rm-block:hover { border-color:rgba(244,63,94,.4); color:var(--danger); background:rgba(244,63,94,.07); }
+ 
+        /* ── Add buttons ── */
+        .add-btn {
+            display:inline-flex; align-items:center; gap:6px;
+            margin-top:14px; padding:9px 18px;
+            border:1.5px dashed rgba(92,111,255,.3);
+            background:rgba(92,111,255,.05);
+            color:var(--indigo); border-radius:10px;
+            font-family:'Geist',sans-serif; font-size:13px; font-weight:500;
+            cursor:pointer; transition:all .2s; letter-spacing:.2px;
+        }
+        .add-btn:hover { background:var(--indigo); border-color:var(--indigo); color:#fff; border-style:solid; }
+        .add-btn .plus { font-size:16px; line-height:1; }
+ 
+        /* ── Divider ── */
+        .divider {
+            border:none; border-top:1px solid var(--border2); margin:22px 0;
+        }
+ 
+        /* ── Template selector ── */
+        .tmpl-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .tmpl-opt { position:relative; }
+        .tmpl-opt input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
+        .tmpl-opt label {
+            display:block; padding:18px 16px;
+            border:1px solid var(--border2); border-radius:14px;
+            cursor:pointer; transition:all .2s;
+            background:rgba(255,255,255,.025);
+            text-transform:none; letter-spacing:0;
+            font-size:14px; font-weight:400;
+        }
+        .tmpl-opt input:checked + label {
+            border-color:rgba(92,111,255,.5);
+            background:rgba(92,111,255,.1);
+            box-shadow:0 0 0 3px rgba(92,111,255,.12);
+        }
+        .tmpl-prev { font-size:26px; margin-bottom:8px; }
+        .tmpl-name { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:2px; }
+        .tmpl-desc { font-size:11px; color:var(--muted); }
+        .tmpl-tag {
+            display:inline-block; margin-top:8px;
+            padding:2px 9px; border-radius:100px; font-size:10px;
+            background:rgba(92,111,255,.1); color:#a5b4fc;
+            border:1px solid rgba(92,111,255,.18);
+        }
+ 
+        /* ── Submit ── */
+        .submit-area { margin-top:28px; }
+        .submit-btn {
+            width:100%; padding:17px;
+            background:var(--indigo);
+            color:#fff; border:none; border-radius:14px;
+            font-family:'Syne',sans-serif; font-size:16px; font-weight:700;
+            letter-spacing:.3px; cursor:pointer;
+            transition:all .2s; position:relative; overflow:hidden;
+        }
+        .submit-btn::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);
+            opacity:0; transition:opacity .2s;
+        }
+        .submit-btn:hover { background:var(--indigo2); transform:translateY(-2px); box-shadow:0 16px 40px rgba(92,111,255,.35); }
+        .submit-btn:hover::before { opacity:1; }
+        .submit-btn:active { transform:translateY(0); }
+        .submit-note { text-align:center; margin-top:12px; font-size:12px; color:var(--dim); }
+ 
+        /* ── Scroll reveal ── */
+        .rv { opacity:0; transform:translateY(24px); transition:opacity .6s ease, transform .6s ease; }
+        .rv.on { opacity:1; transform:none; }
+        .rv.d1{transition-delay:.05s}.rv.d2{transition-delay:.1s}.rv.d3{transition-delay:.15s}
+ 
+        @media(max-width:700px){
+            nav { padding:0 20px; }
+            .form-wrap { padding:0 16px; }
+            .s-card { padding:22px 18px; }
+            .row2,.row3 { grid-template-columns:1fr; }
+            .tmpl-grid { grid-template-columns:1fr; }
+            .page-hero { padding:48px 16px 32px; }
+            #cur,#cur-ring{display:none}
+        }
+    </style>
+</head>
+<body>
+ 
+<div id="cur"></div>
+<div id="cur-ring"></div>
+ 
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+ 
+<!-- NAV -->
+<nav>
+    <a href="{% url 'homepage' %}" class="logo">Resumé<span>Craft</span></a>
+    <a href="{% url 'homepage' %}" class="nav-back">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M19 12H5M5 12l7-7M5 12l7 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back to home
+    </a>
+</nav>
+ 
+<!-- PAGE HEADER -->
+<div class="page-hero">
+    <div class="page-eyebrow">
+        <span class="ew">✦</span>
+        Step 1 of 1 · Fill in your details
+    </div>
+    <h1 class="page-h1">
+        Build your<br><i>perfect resume</i>
+    </h1>
+    <p class="page-sub">Fill in the sections below. Every field you add makes your resume stronger.</p>
+</div>
+ 
+<!-- PROGRESS -->
+<div class="prog-wrap">
+    <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog"></div></div>
+    <div class="prog-label" id="prog-label">0% complete</div>
+</div>
+ 
+<!-- FORM -->
+<div class="form-wrap">
+<form method="POST" enctype="multipart/form-data" id="rform">
+{% csrf_token %}
+ 
+    <!-- ── 1. PERSONAL INFO ── -->
+    <div class="s-card rv">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Personal Information</div>
+                <div class="card-sub">How recruiters will reach you</div>
+            </div>
+            <div class="card-icon">👤</div>
+        </div>
+ 
+        <div class="row2">
+            <div class="fg">
+                <label class="lbl">Full Name <span class="req">✦</span></label>
+                <input type="text" name="name" placeholder="e.g. Arjun Mehta" required>
+            </div>
+            <div class="fg">
+                <label class="lbl">Job Title / Role</label>
+                <input type="text" name="job_title" placeholder="e.g. Frontend Developer">
+            </div>
+        </div>
+        <div class="row2">
+            <div class="fg">
+                <label class="lbl">Email Address <span class="req">✦</span></label>
+                <input type="email" name="email" placeholder="you@example.com" required>
+            </div>
+            <div class="fg">
+                <label class="lbl">Phone Number</label>
+                <input type="tel" name="phone" placeholder="+91 98765 43210">
+            </div>
+        </div>
+        <div class="row2">
+            <div class="fg">
+                <label class="lbl">City / Location</label>
+                <input type="text" name="location" placeholder="e.g. Ahmedabad, Gujarat">
+            </div>
+            <div class="fg">
+                <label class="lbl">Years of Experience</label>
+                <input type="number" name="years_experience" placeholder="e.g. 3" min="0" max="60">
+            </div>
+        </div>
+        <div class="row3">
+            <div class="fg">
+                <label class="lbl">LinkedIn</label>
+                <input type="url" name="linkedin" placeholder="linkedin.com/in/you">
+            </div>
+            <div class="fg">
+                <label class="lbl">GitHub</label>
+                <input type="url" name="github" placeholder="github.com/you">
+            </div>
+            <div class="fg">
+                <label class="lbl">Website</label>
+                <input type="url" name="website" placeholder="yoursite.com">
+            </div>
+        </div>
+        <div class="fg">
+            <label class="lbl">Professional Summary</label>
+            <textarea name="summary" placeholder="2–3 sentences about your background, strengths, and goals..."></textarea>
+        </div>
+        <div class="fg">
+            <label class="lbl">Profile Photo</label>
+            <div class="photo-zone">
+                <input type="file" name="photo" accept="image/*" id="photo-inp" onchange="showPhoto(this)">
+                <div class="pz-icon">📷</div>
+                <div class="pz-text"><strong>Click to upload</strong> or drag &amp; drop<br>PNG or JPG, up to 5 MB</div>
+                <div id="photo-name"></div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- ── 2. SKILLS ── -->
+    <div class="s-card rv d1">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Skills & Languages</div>
+                <div class="card-sub">Technical and professional abilities</div>
+            </div>
+            <div class="card-icon">🔧</div>
+        </div>
+ 
+        <div class="row2" style="margin-bottom:14px">
+            <div class="fg" style="margin:0">
+                <label class="lbl">Skill Category</label>
+                <select name="skill_category">
+                    <option value="">Select focus area</option>
+                    <option value="technical">Technical / Engineering</option>
+                    <option value="design">Design / Creative</option>
+                    <option value="management">Management / Leadership</option>
+                    <option value="marketing">Marketing / Sales</option>
+                    <option value="finance">Finance / Accounting</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="fg" style="margin:0"></div>
+        </div>
+ 
+        <label class="lbl">Technical Skills</label>
+        <div class="dyn-list" id="skills-container">
+            <div class="dyn-item">
+                <input type="text" name="skills[]" placeholder="e.g. Python, React, Figma…">
+                <button type="button" class="rm-btn" onclick="rmItem(this)" title="Remove">×</button>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addSkill()"><span class="plus">+</span> Add Skill</button>
+ 
+        <hr class="divider">
+ 
+        <label class="lbl">Languages</label>
+        <div class="dyn-list" id="lang-container">
+            <div class="dyn-item">
+                <input type="text" name="languages[]" placeholder="e.g. English (Fluent), Hindi (Native)">
+                <button type="button" class="rm-btn" onclick="rmItem(this)" title="Remove">×</button>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addLang()"><span class="plus">+</span> Add Language</button>
+    </div>
+ 
+    <!-- ── 3. WORK EXPERIENCE ── -->
+    <div class="s-card rv d2">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Work Experience</div>
+                <div class="card-sub">Most recent first</div>
+            </div>
+            <div class="card-icon">🏢</div>
+        </div>
+        <div id="exp-container">
+            <div class="block-item">
+                <button type="button" class="rm-block" onclick="rmBlock(this)" title="Remove">×</button>
+                <div class="row2">
+                    <div class="fg"><label class="lbl">Job Title</label><input type="text" name="exp_title[]" placeholder="e.g. Software Engineer"></div>
+                    <div class="fg"><label class="lbl">Company</label><input type="text" name="exp_company[]" placeholder="e.g. Infosys Ltd."></div>
+                </div>
+                <div class="row3">
+                    <div class="fg"><label class="lbl">Start Date</label><input type="text" name="exp_start[]" placeholder="e.g. Jan 2022"></div>
+                    <div class="fg"><label class="lbl">End Date</label><input type="text" name="exp_end[]" placeholder="e.g. Present"></div>
+                    <div class="fg"><label class="lbl">Location</label><input type="text" name="exp_location[]" placeholder="e.g. Remote"></div>
+                </div>
+                <div class="fg"><label class="lbl">Responsibilities & Achievements</label><textarea name="exp_description[]" placeholder="• Led a team of 4 engineers&#10;• Reduced API latency by 30%…"></textarea></div>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addExp()"><span class="plus">+</span> Add Experience</button>
+    </div>
+ 
+    <!-- ── 4. EDUCATION ── -->
+    <div class="s-card rv d1">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Education</div>
+                <div class="card-sub">Academic background</div>
+            </div>
+            <div class="card-icon">🎓</div>
+        </div>
+        <div id="edu-container">
+            <div class="block-item">
+                <button type="button" class="rm-block" onclick="rmBlock(this)" title="Remove">×</button>
+                <div class="row2">
+                    <div class="fg"><label class="lbl">Degree / Qualification</label><input type="text" name="edu_degree[]" placeholder="e.g. B.Tech Computer Science"></div>
+                    <div class="fg"><label class="lbl">Institution</label><input type="text" name="edu_institution[]" placeholder="e.g. IIT Bombay"></div>
+                </div>
+                <div class="row2">
+                    <div class="fg"><label class="lbl">Graduation Year</label><input type="text" name="edu_year[]" placeholder="e.g. 2022"></div>
+                    <div class="fg"><label class="lbl">CGPA / Percentage</label><input type="text" name="edu_score[]" placeholder="e.g. 8.7 CGPA or 85%"></div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addEdu()"><span class="plus">+</span> Add Education</button>
+    </div>
+ 
+    <!-- ── 5. PROJECTS ── -->
+    <div class="s-card rv d2">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Projects</div>
+                <div class="card-sub">Showcase your best work</div>
+            </div>
+            <div class="card-icon">🚀</div>
+        </div>
+        <div id="proj-container">
+            <div class="block-item">
+                <button type="button" class="rm-block" onclick="rmBlock(this)" title="Remove">×</button>
+                <div class="row2">
+                    <div class="fg"><label class="lbl">Project Name</label><input type="text" name="proj_name[]" placeholder="e.g. E-commerce Platform"></div>
+                    <div class="fg"><label class="lbl">Tech Stack</label><input type="text" name="proj_tech[]" placeholder="e.g. React, Node.js, MongoDB"></div>
+                </div>
+                <div class="fg"><label class="lbl">Project Link</label><input type="url" name="proj_link[]" placeholder="github.com/you/project or live URL"></div>
+                <div class="fg"><label class="lbl">Description</label><textarea name="proj_description[]" placeholder="What it does, your role, and impact…"></textarea></div>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addProj()"><span class="plus">+</span> Add Project</button>
+    </div>
+ 
+    <!-- ── 6. CERTS & AWARDS ── -->
+    <div class="s-card rv d1">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Certifications & Awards</div>
+                <div class="card-sub">Credentials and recognition</div>
+            </div>
+            <div class="card-icon">🏆</div>
+        </div>
+        <label class="lbl">Certifications</label>
+        <div class="dyn-list" id="cert-container">
+            <div class="dyn-item">
+                <input type="text" name="certifications[]" placeholder="e.g. AWS Certified Developer – 2024">
+                <button type="button" class="rm-btn" onclick="rmItem(this)">×</button>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addDyn('cert-container','certifications[]','e.g. Google Cloud Associate')"><span class="plus">+</span> Add Certification</button>
+ 
+        <hr class="divider">
+ 
+        <label class="lbl">Awards & Achievements</label>
+        <div class="dyn-list" id="award-container">
+            <div class="dyn-item">
+                <input type="text" name="awards[]" placeholder="e.g. Best Intern Award – TCS 2023">
+                <button type="button" class="rm-btn" onclick="rmItem(this)">×</button>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addDyn('award-container','awards[]','e.g. Hackathon 1st Place')"><span class="plus">+</span> Add Award</button>
+    </div>
+ 
+    <!-- ── 7. INTERESTS ── -->
+    <div class="s-card rv d2">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Interests & Hobbies</div>
+                <div class="card-sub">Optional — adds personality</div>
+            </div>
+            <div class="card-icon">⭐</div>
+        </div>
+        <div class="dyn-list" id="interest-container">
+            <div class="dyn-item">
+                <input type="text" name="interests[]" placeholder="e.g. Open-source, Photography, Chess">
+                <button type="button" class="rm-btn" onclick="rmItem(this)">×</button>
+            </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addDyn('interest-container','interests[]','e.g. Hiking, Blogging')"><span class="plus">+</span> Add Interest</button>
+    </div>
+ 
+    <!-- ── 8. TEMPLATE ── -->
+    <div class="s-card rv d1">
+        <div class="card-head">
+            <div>
+                <div class="card-title">Choose Template</div>
+                <div class="card-sub">Pick the style that suits your role</div>
+            </div>
+            <div class="card-icon">🎨</div>
+        </div>
+
+        <form action="{% url 'generate_resume' %}" method="POST">
+    {% csrf_token %}
+
+        <div class="tmpl-grid">
+            <div class="tmpl-opt">
+                <input type="radio" name="template" id="t1" value="template1.html" checked>
+                <label for="t1">
+                    <div class="tmpl-prev">🎨</div>
+                    <div class="tmpl-name">Modern</div>
+                    <div class="tmpl-desc">Bold sidebar, two-column layout</div>
+                    <span class="tmpl-tag">Most popular</span>
+                </label>
+            </div>
+            <div class="tmpl-opt">
+                <input type="radio" name="template" id="t2" value="template2.html">
+                <label for="t2">
+                    <div class="tmpl-prev">📄</div>
+                    <div class="tmpl-name">Classic</div>
+                    <div class="tmpl-desc">Single-column, ATS friendly</div>
+                    <span class="tmpl-tag">ATS safe</span>
+                </label>
+            </div>
+            <div class="tmpl-opt">
+                <input type="radio" name="template" id="t3" value="template3.html">
+                <label for="t3">
+                    <div class="tmpl-prev">✦</div>
+                    <div class="tmpl-name">Minimal</div>
+                    <div class="tmpl-desc">Whitespace-first, elegant</div>
+                    <span class="tmpl-tag">Clean</span>
+                </label>
+            </div>
+            <div class="tmpl-opt">
+                <input type="radio" name="template" id="t4" value="template4.html">
+                <label for="t4">
+                    <div class="tmpl-prev">💼</div>
+                    <div class="tmpl-name">Executive</div>
+                    <div class="tmpl-desc">Premium, leadership roles</div>
+                    <span class="tmpl-tag">Premium</span>
+                </label>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- ── SUBMIT ── -->
+    <div class="submit-area rv d2">
+        <button type="submit" class="submit-btn">✦ Generate My Resume</button>
+        <p class="submit-note">Your data is only used to generate your resume — nothing is stored.</p>
+    </div>
+ 
+</form>
+</div>
+ 
+<script>
+// ── Cursor ──────────────────────────────────────────────
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let rx=0,ry=0,mx=window.innerWidth/2,my=window.innerHeight/2;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop)})();
+document.querySelectorAll('a,button,input,select,textarea,label').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.style.width=cur.style.height='18px';ring.style.width=ring.style.height='48px'});
+    el.addEventListener('mouseleave',()=>{cur.style.width=cur.style.height='8px';ring.style.width=ring.style.height='30px'});
+});
+ 
+// ── Scroll reveal ────────────────────────────────────────
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target)}}),{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+ 
+// ── Progress ─────────────────────────────────────────────
+const prog=document.getElementById('prog'),progLabel=document.getElementById('prog-label');
+function updateProg(){
+    const all=document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="url"],input[type="number"],textarea');
+    let filled=0;
+    all.forEach(i=>{if(i.value.trim())filled++});
+    const pct=Math.min(100,Math.round(filled/all.length*100));
+    prog.style.width=pct+'%';
+    progLabel.textContent=pct+'% complete';
+}
+document.getElementById('rform').addEventListener('input',updateProg);
+ 
+// ── Photo name ───────────────────────────────────────────
+function showPhoto(inp){
+    document.getElementById('photo-name').textContent=inp.files[0]?'✓ '+inp.files[0].name:'';
+}
+ 
+// ── Remove helpers ───────────────────────────────────────
+function rmItem(btn){const p=btn.closest('.dyn-item');if(p.parentElement.children.length>1)p.remove();updateProg();}
+function rmBlock(btn){btn.closest('.block-item').remove();updateProg();}
+ 
+// ── Dynamic single-input items ───────────────────────────
+function addDyn(cid,name,placeholder){
+    const c=document.getElementById(cid);
+    const d=document.createElement('div');d.className='dyn-item';
+    d.innerHTML=`<input type="text" name="${name}" placeholder="${placeholder}"><button type="button" class="rm-btn" onclick="rmItem(this)">×</button>`;
+    c.appendChild(d);d.querySelector('input').focus();updateProg();
+}
+function addSkill(){addDyn('skills-container','skills[]','e.g. JavaScript, Docker, SQL…');}
+function addLang(){addDyn('lang-container','languages[]','e.g. Gujarati (Native)');}
+ 
+// ── Dynamic block templates ──────────────────────────────
+function addExp(){
+    const c=document.getElementById('exp-container');
+    const d=document.createElement('div');d.className='block-item';
+    d.innerHTML=`<button type="button" class="rm-block" onclick="rmBlock(this)">×</button>
+    <div class="row2"><div class="fg"><label class="lbl">Job Title</label><input type="text" name="exp_title[]" placeholder="e.g. Product Manager"></div><div class="fg"><label class="lbl">Company</label><input type="text" name="exp_company[]" placeholder="e.g. Flipkart"></div></div>
+    <div class="row3"><div class="fg"><label class="lbl">Start Date</label><input type="text" name="exp_start[]" placeholder="e.g. Mar 2021"></div><div class="fg"><label class="lbl">End Date</label><input type="text" name="exp_end[]" placeholder="e.g. Present"></div><div class="fg"><label class="lbl">Location</label><input type="text" name="exp_location[]" placeholder="e.g. Mumbai"></div></div>
+    <div class="fg"><label class="lbl">Responsibilities & Achievements</label><textarea name="exp_description[]" placeholder="• Led product roadmap&#10;• Increased retention by 20%…"></textarea></div>`;
+    c.appendChild(d);d.querySelector('input').focus();updateProg();
+}
+function addEdu(){
+    const c=document.getElementById('edu-container');
+    const d=document.createElement('div');d.className='block-item';
+    d.innerHTML=`<button type="button" class="rm-block" onclick="rmBlock(this)">×</button>
+    <div class="row2"><div class="fg"><label class="lbl">Degree / Qualification</label><input type="text" name="edu_degree[]" placeholder="e.g. MBA"></div><div class="fg"><label class="lbl">Institution</label><input type="text" name="edu_institution[]" placeholder="e.g. IIM Ahmedabad"></div></div>
+    <div class="row2"><div class="fg"><label class="lbl">Graduation Year</label><input type="text" name="edu_year[]" placeholder="e.g. 2024"></div><div class="fg"><label class="lbl">CGPA / Percentage</label><input type="text" name="edu_score[]" placeholder="e.g. 9.1 CGPA"></div></div>`;
+    c.appendChild(d);d.querySelector('input').focus();updateProg();
+}
+function addProj(){
+    const c=document.getElementById('proj-container');
+    const d=document.createElement('div');d.className='block-item';
+    d.innerHTML=`<button type="button" class="rm-block" onclick="rmBlock(this)">×</button>
+    <div class="row2"><div class="fg"><label class="lbl">Project Name</label><input type="text" name="proj_name[]" placeholder="e.g. Chat App"></div><div class="fg"><label class="lbl">Tech Stack</label><input type="text" name="proj_tech[]" placeholder="e.g. Django, WebSockets"></div></div>
+    <div class="fg"><label class="lbl">Project Link</label><input type="url" name="proj_link[]" placeholder="github.com/you/project"></div>
+    <div class="fg"><label class="lbl">Description</label><textarea name="proj_description[]" placeholder="Describe the project, your role, and results…"></textarea></div>`;
+    c.appendChild(d);d.querySelector('input').focus();updateProg();
+}
+ 
+// ── Card 3D tilt ─────────────────────────────────────────
+document.querySelectorAll('.s-card').forEach(c=>{
+    c.style.transformStyle='preserve-3d';
+    c.addEventListener('mousemove',e=>{
+        const r=c.getBoundingClientRect();
+        const x=(e.clientX-r.left)/r.width-.5;
+        const y=(e.clientY-r.top)/r.height-.5;
+        c.style.transform=`rotateX(${(-y*3).toFixed(1)}deg) rotateY(${(x*3).toFixed(1)}deg)`;
+    });
+    c.addEventListener('mouseleave',()=>c.style.transform='');
+});
+</script>
+</body>
+</html>
