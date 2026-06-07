@@ -77,7 +77,7 @@ def home(request):
     if request.method != 'POST':
         return render(request, 'form.html')
  
-    # ── Personal Info ──────────────────────────
+    # Personal Info
     name             = request.POST.get('name', '').strip()
     job_title        = request.POST.get('job_title', '').strip()
     email            = request.POST.get('email', '').strip()
@@ -90,7 +90,7 @@ def home(request):
     years_experience = request.POST.get('years_experience', '').strip()
     skill_category   = request.POST.get('skill_category', '').strip()
  
-    # ── Photo Upload ───────────────────────────
+    # Photo Upload 
     photo     = request.FILES.get('photo')
     photo_url = None
     if photo:
@@ -98,16 +98,16 @@ def home(request):
         filename  = fs.save(photo.name, photo)
         photo_url = fs.url(filename)
  
-    # ── Skills & Languages ─────────────────────
+    # Skills & Languages 
     skills    = [s.strip() for s in request.POST.getlist('skills[]')    if s.strip()]
     languages = [l.strip() for l in request.POST.getlist('languages[]') if l.strip()]
     interests = [i.strip() for i in request.POST.getlist('interests[]') if i.strip()]
  
-    # ── Certifications & Awards ────────────────
+    # Certifications & Awards 
     certifications = [c.strip() for c in request.POST.getlist('certifications[]') if c.strip()]
     awards         = [a.strip() for a in request.POST.getlist('awards[]')         if a.strip()]
  
-    # ── Work Experience ────────────────────────
+    # Work Experience
     exp_titles    = request.POST.getlist('exp_title[]')
     exp_companies = request.POST.getlist('exp_company[]')
     exp_starts    = request.POST.getlist('exp_start[]')
@@ -129,7 +129,7 @@ def home(request):
             'description': exp_descs[i].strip()      if i < len(exp_descs)      else '',
         })
  
-    # ── Education ──────────────────────────────
+    # Education 
     edu_degrees      = request.POST.getlist('edu_degree[]')
     edu_institutions = request.POST.getlist('edu_institution[]')
     edu_years        = request.POST.getlist('edu_year[]')
@@ -147,7 +147,7 @@ def home(request):
             'score':       edu_scores[i].strip()       if i < len(edu_scores)       else '',
         })
  
-    # ── Projects ───────────────────────────────
+    # Projects
     proj_names = request.POST.getlist('proj_name[]')
     proj_techs = request.POST.getlist('proj_tech[]')
     proj_links = request.POST.getlist('proj_link[]')
@@ -165,14 +165,13 @@ def home(request):
             'description': proj_descs[i].strip()  if i < len(proj_descs)  else '',
         })
  
-    # ── Template ───────────────────────────────
+    # Template
     template = request.POST.get('template', 'template1.html')
     if template not in ALLOWED_TEMPLATES:
         template = 'template1.html'
  
-    # ── Save to DB ─────────────────────────────
-    # Flatten structured data to strings for the legacy Resume model.
-    # Structured data goes into the template context directly.
+    # Save to DB
+    
     exp_str  = ' | '.join(
         f"{e['title']} at {e['company']} ({e['start']}–{e['end']})"
         for e in experiences
@@ -190,10 +189,10 @@ def home(request):
         education  = edu_str,
         experience = exp_str,
         template   = template,
-        photo      = photo,         # raw file; may be None
+        photo      = photo,         
     )
  
-    # ── Build context & render resume ──────────
+    # Build context & render resume 
     context = {
         # Personal
         'name':             name,
@@ -227,29 +226,18 @@ def home(request):
 
 def generate_resume(request):
     if request.method == 'POST':
-        # 1. Get the template value from the submitted form
+     
         selected_template = request.POST.get('template')
 
-        # 2. Define your allowed templates for security
         allowed_templates = ['template1.html', 'template2.html','template3.html','template4.html']
 
-        # 3. Check if the requested template is valid
         if selected_template in allowed_templates:
-            
-            # (Optional) You can also grab other form data here to pass to the template
-            # context = {
-            #     'first_name': request.POST.get('first_name'),
-            #     'experience': request.POST.get('experience'),
-            # }
-            
-            # 4. Render the chosen template
-            return render(request, selected_template) # add context here if you grabbed data
+          
+            return render(request, selected_template) 
+        
         else:
-            # Fallback if an invalid template name was somehow submitted
+           
             return render(request, 'template1.html')
 
-    # If the user tries to access this URL directly without submitting the form,
-    # redirect them back to the page containing the form.
-    # Replace 'form_page_url_name' with the actual name of your form view in urls.py
     return redirect('form.html')
 
