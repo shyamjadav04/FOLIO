@@ -1,8 +1,12 @@
+from urllib import request
+
 from django.shortcuts import render
+import base64
 from django.core.files.storage import FileSystemStorage
 from .models import Resume  
 from .models import Resume
 from django.shortcuts import render, redirect
+
 
 
 def homepage(request):
@@ -91,12 +95,14 @@ def home(request):
     skill_category   = request.POST.get('skill_category', '').strip()
  
     # Photo Upload 
-    photo     = request.FILES.get('photo')
+    photo = request.FILES.get('photo')
     photo_url = None
+
     if photo:
-        fs        = FileSystemStorage()
-        filename  = fs.save(photo.name, photo)
-        photo_url = fs.url(filename)
+        image_data = photo.read()
+        encoded = base64.b64encode(image_data).decode('utf-8')
+
+        photo_url = f"data:{photo.content_type};base64,{encoded}"
  
     # Skills & Languages 
     skills    = [s.strip() for s in request.POST.getlist('skills[]')    if s.strip()]
